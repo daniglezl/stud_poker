@@ -1,0 +1,74 @@
+Card rank: (low to high)
+
+1) HIGH_CARD (eg. A K J Q 9) 
+2) PAIR (eg. K K 8 7 3)
+3) TWO_PAIR (eg. K K J J 5)
+4) THREE_KIND (eg. K K K Q J)
+5) STRAIGHT (eg. A K Q J 10)
+6) FLUSH (eg. A SPADES  K SPADES  10 SPADES  7 SPADES  6 SPADES)
+7) FULL_HOUSE (eg. K K K Q Q)
+8) FOUR_KIND (eg. K K K K Q)
+9) STRAIGHT_FLUSH (eg. A SPADES  K SPADES  Q SPADES  J SPADES  10 SPADES)    
+
+Note that we would have to sort the cards, preferably in descending order so that we can easily
+determine the rank and the winner.
+
+I would use enumerated types for the card ranks so that we can easily return and compare the rank
+
+Having separate functions for each rank would create lot of redundancy.
+I have written the code for getMatch and getRank
+My idea has the following functions, without the arguments for now:
+
+1) getWinner()
+2) getRank()
+	a) isFlush() - return FLUSH or 0
+	b) isStraight() - return STRAIGHT or 0 
+	c) getMatch() - return other ranks
+
+So a) and b) will be used for straight-flush, flush and straight. c) will be used for the rest 
+
+getMatch()
+{
+	int i = 0, j = 0, two = 0, three = 0, count = 1;
+
+	for( i = j; i < 4; i++)
+	{
+		for( j = i + 1; j < 5; j++)
+		{
+			if ( hand[ i ] == hand[ j ])
+				count ++;
+			else
+				break;
+		}
+		if ( count == 4)
+			return FOUR_KIND;
+		if ( count == 3)
+			three = 1;
+		if( count == 2)
+			two = 1;
+		count = 1;
+	}
+	
+	if ( two == 1 && three == 1)
+		return FULL_HOUSE;
+	else if (three == 1)
+		return THREE_KIND;
+	else if ( two == 2 )
+		return TWO_PAIR;
+	else if ( two == 1 )
+		return PAIR;
+	else 
+		return HIGH_CARD;
+}
+
+getRank()
+{
+	if ( isFlush() == FLUSH && isStraight() == STRAIGHT)
+		return STRAIGHT_FLUSH;
+	else if ( isFlush() > getMatch () )
+		return isFlush();
+	else if ( isStraight() > getMatch() )
+		return isStraight();
+	else 
+		return getMatch();
+}
