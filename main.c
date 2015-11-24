@@ -12,13 +12,18 @@ int main(int argc, char *argv[]) {
     return 1;
 
   // declaring variables
-  int nCards = atoi(argv[1]);
   int nHands = atoi(argv[2]);
+  Card deck[DECK];
+  Card hands[nHands][N_CARDS];
+  int ranks[nHands][2];
 
   // calling functions
   // create deck
-  Card *deck;
-  deck = constructDeck();
+  constructDeck(deck);
+
+  // display deck
+  printf("%s\n", "Deck: ==========================================================================");
+  displayCards(deck, DECK);
 
   // shuffle deck
   shuffleDeck(deck);
@@ -28,19 +33,35 @@ int main(int argc, char *argv[]) {
   displayCards(deck, DECK);
 
   // deal cards
-  Card hands[nCards * nHands + nHands - 1];
-  dealCards(hands, nCards, nHands, deck);
+  dealCards(hands, deck, nHands);
+
+  /******************** Set values here to test ranks ************************/
+  // hands[0][0].face = 1;
+  // hands[0][0].suit = 0;
+  // hands[0][0].index = 1;
+  // hands[0][1].face = 1;
+  // hands[0][1].suit = 1;
+  // hands[0][1].index = 2;
+  // hands[0][2].face = 1;
+  // hands[0][2].suit = 2;
+  // hands[0][2].index = 3;
+  // hands[0][3].face = 1;
+  // hands[0][3].suit = 3;
+  // hands[0][3].index = 4;
+  // hands[0][4].face = 2;
+  // hands[0][4].suit = 1;
+  // hands[0][4].index = 5;
 
   // print unsorted hands
   printf("%s\n", "Unsorted hands: ================================================================");
-  displayHands(hands, nCards, nHands);
+  displayHands(hands, ranks, nHands, FALSE);
 
   // sort hands
-  sortHands(hands, nCards, nHands);
+  sortHands(hands, ranks, nHands);
 
   // display sorted hands
   printf("%s\n", "Sorted hands: ==================================================================");
-  displayHands(hands, nCards, nHands);
+  displayHands(hands, ranks, nHands, TRUE);
 
   return 0;
 }
