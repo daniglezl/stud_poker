@@ -1,54 +1,71 @@
 #include "deck.h"
 
-static char *faces[14] = { ACE , ACE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT,
-                           NINE, TEN, JACK, QUEEN, KING };
+static const char *SUITS[4] = { "\xE2\x99\xA1", "\xE2\x99\xA7",
+                                "\xE2\x99\xA2", "\xE2\x99\xA4" };
 
-// checks the input is correct
+static const char *FACES[14] = { " ", "A", "2", "3", "4", "5", "6", "7",
+                                 "8", "9", "10", "J", "Q", "K" };
+static const char *RANKS[10] = { " ", "Straight Flush", "Four of a Kind",
+                                 "Full House", "Flush", "Straight",
+                                 "Three of a Kind", "Two Pair", "One Pair",
+                                 "High Card" };
+
 int checkInput(int argc, char *argv[]) {
+  int arg1, arg2;
+
   if (argc != N_ARGS) {
-    printf("Incorrect number of arguments. Try again.\n");
+    printf("%s\n", "Incorrect number of arguments.");
     return FALSE;
   }
-  if (atoi(argv[1]) < MIN_CARDS_HANDS || atoi(argv[1]) > MAX_CARDS_HANDS) {
-    printf("Arguments must be integers between %d - %d. Try again.\n", MIN_CARDS_HANDS, MAX_CARDS_HANDS);
+
+  if (isdigit(*argv[1])) {
+    arg1 = atoi(argv[1]);
+    if (arg1 != N_CARDS) {
+      printf("Number of cards has to be %d\n", N_CARDS);
+      return FALSE;
+    }
+  } else {
+    printf("Enter %d for number of cards\n", N_CARDS);
     return FALSE;
   }
-  if (atoi(argv[2]) < MIN_CARDS_HANDS || atoi(argv[2]) > N_VALUES) {
-    printf("Arguments must be integers between %d - %d. Try again.\n", MIN_CARDS_HANDS, MAX_CARDS_HANDS);
-    return FALSE;
+
+  if (isdigit(*argv[2])) {
+    arg2 = atoi(argv[2]);
+    if (arg2 < MIN_HANDS || arg2 > MAX_HANDS) {
+      printf("Number of hands has to be between %d and %d\n", MIN_HANDS,
+             MAX_HANDS);
+      return FALSE;
+    }
+  } else {
+      printf("%s\n", "Number of hands has to be an integer");
+      return FALSE;
   }
-  int cards;
-  if ((cards = atoi(argv[1]) * atoi(argv[2])) > DECK) {
-    printf("Decks only have %d cards. Can't deal %d cards. Try again.\n", DECK, cards);
-    return FALSE;
-  }
+
   return TRUE;
 }
 
-// creates a deck and returns it. Uses the Card struct and adds cards to the deck
-Card *constructDeck() {
-  static Card deck[DECK];
+
+void constructDeck(Card *deck) {
   int i, j = 0;
 
-  for (i = 1; i <= N_VALUES; i++) {
-    Card h = { H_SYMBOL, faces[i], j };
+  for (i = 1; i <= MAX_FACES; i++) {
+    Card h = { HEART, i, j };
     deck[j++] = h;
 
-    Card c = { C_SYMBOL, faces[i], j };
+    Card c = { CLUB, i, j };
     deck[j++] = c;
 
-    Card d = { D_SYMBOL, faces[i], j };
+    Card d = { DIAMOND, i, j };
     deck[j++] = d;
 
-    Card s = { S_SYMBOL, faces[i], j };
+    Card s = { SPADE, i, j };
     deck[j++] = s;
   }
-
-  return deck;
 }
 
-//shuffles the deck using srand and time_t
-//goes through the array swapping each card
+
+// Comment from professor: Soemtimes your shuffle is not working,
+// cards stay close to original order
 void shuffleDeck(Card *deck) {
   int i;
   time_t t;
@@ -59,7 +76,14 @@ void shuffleDeck(Card *deck) {
   }
 }
 
-//displays any ammount of cards using special unicode characters
+
+void swapElements(Card *hands, int pos1, int pos2) {
+  Card aux = hands[pos1];
+  hands[pos1] = hands[pos2];
+  hands[pos2] = aux;
+}
+
+
 void displayCards(Card *cards, int nCards) {
   int j, r, k = 0, i = nCards / N_CARDS_LINE;
   if ((r = nCards % N_CARDS_LINE > 0))
@@ -80,19 +104,19 @@ void displayCards(Card *cards, int nCards) {
     printf("\n");
 
     for (r = 0; r < cardsPerLine[j]; r++) {
-      printf("%s%s    %s ", V_LINE, cards[k++].suit, V_LINE);
+      printf("%s%s    %s ", V_LINE, SUITS[cards[k++].suit], V_LINE);
     }
     printf("\n");
     k -= cardsPerLine[j];
 
     for (r = 0; r < cardsPerLine[j]; r++) {
-      printf("%s %2s  %s ", V_LINE, cards[k++].value, V_LINE);
+      printf("%s %2s  %s ", V_LINE, FACES[cards[k++].face], V_LINE);
     }
     printf("\n");
     k -= cardsPerLine[j];
 
     for (r = 0; r < cardsPerLine[j]; r++) {
-      printf("%s    %s%s ", V_LINE, cards[k++].suit, V_LINE);
+      printf("%s    %s%s ", V_LINE, SUITS[cards[k++].suit], V_LINE);
     }
     printf("\n");
 
@@ -101,79 +125,167 @@ void displayCards(Card *cards, int nCards) {
     }
     printf("\n\n");
   }
-
 }
 
-// creates an array with the specified number of cards per hand
-//separates them with a card with suit and value equal to 0
-void dealCards(Card *hands, int nCards, int nHands, Card *deck) {
-  int limit = nCards * nHands + nHands - 1;
-  int i = 0, j = 0;
-  for (; i < limit; i++) {
-    hands[i] = deck[j];
-    j++;
-    if ((j) % nCards == 0) {
-      Card aux = { "0", "0" };
-      hands[++i] = aux;
+
+void dealCards(Card hands[][N_CARDS], Card *deck, int nHands) {
+  int i, j, index = 0;
+  for (i = 0; i < nHands; i++)
+    for (j = 0; j < N_CARDS; j++) {
+      hands[i][j] = deck[index];
+      index++;
     }
-  }
 }
 
-// sorts each hand by making calls to quickSort and passing a sub array of the
-// hands array each time
-void sortHands(Card *hands, int nCards, int nHands) {
+
+void displayHands(Card hands[][N_CARDS], int ranks[][2], int nHands,
+                  int printRank) {
   int i;
+  if (printRank)
+    for (i = 0; i < nHands; i++) {
+      printf("Hand %d, rank: %s, high: %d\n", i + 1, RANKS[ranks[i][0]], ranks[i][1]);
+      displayCards(hands[i], N_CARDS);
+    }
+  else
   for (i = 0; i < nHands; i++) {
-    int start = nCards * i + 1 * i;
-    quickSort(hands, start, start + nCards - 1);
+    printf("Hand %d\n", i + 1 );
+    displayCards(hands[i], N_CARDS);
   }
 }
 
-// quickSort algorithm
-void quickSort(Card *hands, int start, int end) {
+
+void quickSort(Card *hand, int start, int end) {
   int i = start;
   int j = end;
 
   if (end - start > 0) {
-    int p = hands[start].index;
+    int p = hand[start].index;
 
     while (j > i) {
-      while (hands[i].index <= p && i <= end && j > i)
+      while (hand[i].index <= p && i <= end && j > i)
         i++;
-      while (hands[j].index > p && j >= start && j >= i)
+      while (hand[j].index > p && j >= start && j >= i)
         j--;
       if (j > i)
-        swapElements(hands, i, j);
+        swapElements(hand, i, j);
     }
-    swapElements(hands, start, j);
-    quickSort(hands, start, j - 1);
-    quickSort(hands, j + 1, end);
+    swapElements(hand, start, j);
+    quickSort(hand, start, j - 1);
+    quickSort(hand, j + 1, end);
   }
   else return;
 }
 
-// swaps elements in an arry
-void swapElements(Card *hands, int pos1, int pos2) {
-  Card aux = hands[pos1];
-  hands[pos1] = hands[pos2];
-  hands[pos2] = aux;
+
+void sortHands(Card hands[][N_CARDS], int ranks[][2], int nHands) {
+  int i;
+  for (i = 0; i < nHands; i++) {
+    quickSort(hands[i], 0, N_CARDS - 1);
+    getRank(hands[i], ranks, i);
+  }
 }
 
-// displays the hands by passing sub arrays of the hands array to displayCards
-void displayHands(Card *hands, int nCards, int nHands) {
-  int i, j = 0, count = 0, handsCount = 1;
-  Card cardsToPrint[nCards];
 
-  for (i = 0; i < nCards * nHands + nHands - 1; i++) {
-    cardsToPrint[j] = hands[i];
-    j++;
-    count++;
-    if (count % nCards == 0) {
-      i++;
-      j = 0;
-      printf("Hand %d:\n", handsCount);
-      handsCount++;
-      displayCards(cardsToPrint, nCards);
-    }
+void getRank(Card *hand, int ranks[][2], int handIndex) {
+  int high, rank = 0, face, auxRank = 0;
+
+  int nKind = getNKind(hand, &high, 0, TRUE);
+  face = high;
+  if (nKind == 4)
+    rank = FK;
+  else if (nKind == 3) {
+    rank = TK;
+    int aux = getNKind(hand, &high, face, FALSE);
+    if (aux == 2)
+      rank = FH;
   }
+  else if (nKind == 2) {
+    rank = OP;
+    int aux = getNKind(hand, &high, face, TRUE);
+    if (aux == 3)
+      rank = FH;
+    else if (aux == 2)
+      rank = TP;
+  }
+
+  if (isStraight(hand, &high)) {
+    auxRank = S;
+    printf("%s\n", "xxx");
+  }
+  if (isFlush(hand, &high)) {
+    printf("%s\n", "xxx");
+    if (auxRank == S)
+      auxRank = SF;
+    else auxRank = F;
+  }
+
+  printf("%d\n", rank);
+  printf("%d\n", auxRank);
+
+  if (auxRank < rank && auxRank != 0)
+    rank = auxRank;
+  if (rank == 0)
+    rank = HC;
+
+  ranks[handIndex][0] = rank;
+  ranks[handIndex][1] = high;
+
+  printf("%d\n", rank);
+}
+
+int isFlush(Card *hand, int *high) {
+  int i;
+  *high = hand[0].face;
+
+  for (i = 1; i < N_CARDS; i++) {
+    if (hand[i].suit != hand[i - 1].suit)
+      return FALSE;
+    *high = (hand[i].face > *high) ? hand[i].face : *high;
+  }
+
+  if (hand[0].face == 1)
+    *high = 1;
+
+  return TRUE;
+}
+
+int isStraight(Card *hand, int *high) {
+  int i = 1, aux = hand[0].face;
+
+  if (hand[0].face == 1)
+    *high = 1;
+  else *high = hand[N_CARDS - 1].face;
+
+  for (; i < N_CARDS; i++) {
+    if (hand[i].face != aux + 1){
+      if (hand[i].face == 10 && aux == 1)
+        aux = hand[i].face;
+      else
+        return FALSE;
+    } else aux = hand[i].face;
+  }
+
+  return TRUE;
+}
+
+int getNKind(Card *hand, int *high, int differentThan, int changeHigh) {
+  int aux = 0;
+  int i;
+  int count = 0;
+
+  for (i = 0; i < N_CARDS; i++) {
+    if (aux == 0 && hand[i].face != differentThan) {
+      aux = hand[i].face;
+      count++;
+    }
+    else if (hand[i].face == aux)
+      count++;
+    else if (count == 1 && hand[i].face != differentThan)
+      aux = hand[i].face;
+  }
+
+  if (count > 1 && aux > differentThan && changeHigh && *high != 1)
+    *high = aux;
+
+  return count;
 }
