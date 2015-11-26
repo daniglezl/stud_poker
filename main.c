@@ -36,20 +36,20 @@ int main(int argc, char *argv[]) {
   dealCards(hands, deck, nHands);
 
   /******************** Set values here to test ranks ************************/
-  // hands[0][0].face = 1;
+  // hands[0][0].face = 2;
   // hands[0][0].suit = 0;
   // hands[0][0].index = 1;
-  // hands[0][1].face = 1;
+  // hands[0][1].face = 3;
   // hands[0][1].suit = 1;
   // hands[0][1].index = 2;
-  // hands[0][2].face = 1;
+  // hands[0][2].face = 4;
   // hands[0][2].suit = 2;
   // hands[0][2].index = 3;
-  // hands[0][3].face = 1;
+  // hands[0][3].face = 5;
   // hands[0][3].suit = 3;
   // hands[0][3].index = 4;
-  // hands[0][4].face = 2;
-  // hands[0][4].suit = 1;
+  // hands[0][4].face = 14;
+  // hands[0][4].suit = 3;
   // hands[0][4].index = 5;
 
   // print unsorted hands
