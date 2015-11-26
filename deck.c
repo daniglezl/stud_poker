@@ -187,7 +187,7 @@ void sortHands(Card hands[][N_CARDS], int ranks[][2], int nHands) {
 
 
 void getRank(Card *hand, int ranks[][2], int handIndex) {
-  int high, rank = 0, face, auxRank = 0;
+  int high = 0, rank = 0, face, auxRank = 0;
 
   int nKind = getNKind(hand, &high, 0, TRUE);
   face = high;
@@ -210,17 +210,12 @@ void getRank(Card *hand, int ranks[][2], int handIndex) {
 
   if (isStraight(hand, &high)) {
     auxRank = S;
-    printf("%s\n", "xxx");
   }
   if (isFlush(hand, &high)) {
-    printf("%s\n", "xxx");
     if (auxRank == S)
       auxRank = SF;
     else auxRank = F;
   }
-
-  printf("%d\n", rank);
-  printf("%d\n", auxRank);
 
   if (auxRank < rank && auxRank != 0)
     rank = auxRank;
@@ -229,8 +224,6 @@ void getRank(Card *hand, int ranks[][2], int handIndex) {
 
   ranks[handIndex][0] = rank;
   ranks[handIndex][1] = high;
-
-  printf("%d\n", rank);
 }
 
 int isFlush(Card *hand, int *high) {
