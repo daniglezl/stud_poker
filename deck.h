@@ -12,6 +12,9 @@
 #define MIN_HANDS 0
 #define MAX_FACES 13
 #define N_CARDS_LINE 10
+#define N_RANNKS 9
+#define N_SUITS 4
+#define ACE 14
 enum ranks { SF = 1, FK, FH, F, S, TK, TP, OP, HC };
 
 #define TOP_LEFT_CORNER   "\xE2\x94\x8C"

@@ -1,14 +1,16 @@
 #include "deck.h"
 
-static const char *SUITS[4] = { "\xE2\x99\xA1", "\xE2\x99\xA7",
-                                "\xE2\x99\xA2", "\xE2\x99\xA4" };
+static const char *SUITS[N_SUITS] = { "\xE2\x99\xA1", "\xE2\x99\xA7",
+                                      "\xE2\x99\xA2", "\xE2\x99\xA4" };
 
-static const char *FACES[14] = { " ", "A", "2", "3", "4", "5", "6", "7",
-                                 "8", "9", "10", "J", "Q", "K" };
-static const char *RANKS[10] = { " ", "Straight Flush", "Four of a Kind",
-                                 "Full House", "Flush", "Straight",
-                                 "Three of a Kind", "Two Pair", "One Pair",
-                                 "High Card" };
+static const char *FACES[MAX_FACES + 2] = { " ", " ", "2", "3", "4", "5", "6",
+                                            "7", "8", "9", "10", "J", "Q", "K",
+                                            "A" };
+static const char *RANKS[N_RANNKS + 1] = { " ", "Straight Flush",
+                                           "Four of a Kind", "Full House",
+                                           "Flush", "Straight",
+                                           "Three of a Kind", "Two Pair",
+                                           "One Pair", "High Card" };
 
 int checkInput(int argc, char *argv[]) {
   int arg1, arg2;
@@ -49,16 +51,16 @@ void constructDeck(Card *deck) {
   int i, j = 0;
 
   for (i = 1; i <= MAX_FACES; i++) {
-    Card h = { HEART, i, j };
+    Card h = { HEART, i + 1, j };
     deck[j++] = h;
 
-    Card c = { CLUB, i, j };
+    Card c = { CLUB, i + 1, j };
     deck[j++] = c;
 
-    Card d = { DIAMOND, i, j };
+    Card d = { DIAMOND, i + 1, j };
     deck[j++] = d;
 
-    Card s = { SPADE, i, j };
+    Card s = { SPADE, i + 1, j };
     deck[j++] = s;
   }
 }
@@ -162,9 +164,9 @@ void quickSort(Card *hand, int start, int end) {
     int p = hand[start].index;
 
     while (j > i) {
-      while (hand[i].index <= p && i <= end && j > i)
+      while (hand[i].index >= p && i <= end && j > i)
         i++;
-      while (hand[j].index > p && j >= start && j >= i)
+      while (hand[j].index < p && j >= start && j >= i)
         j--;
       if (j > i)
         swapElements(hand, i, j);
@@ -208,16 +210,15 @@ void getRank(Card *hand, int ranks[][2], int handIndex) {
       rank = TP;
   }
 
-  if (isStraight(hand, &high)) {
+  if (isStraight(hand, &high))
     auxRank = S;
-  }
   if (isFlush(hand, &high)) {
     if (auxRank == S)
       auxRank = SF;
     else auxRank = F;
   }
 
-  if (auxRank < rank && auxRank != 0)
+  if (rank == 0 || (auxRank < rank && auxRank != 0))
     rank = auxRank;
   if (rank == 0)
     rank = HC;
@@ -230,28 +231,20 @@ int isFlush(Card *hand, int *high) {
   int i;
   *high = hand[0].face;
 
-  for (i = 1; i < N_CARDS; i++) {
+  for (i = 1; i < N_CARDS; i++)
     if (hand[i].suit != hand[i - 1].suit)
       return FALSE;
-    *high = (hand[i].face > *high) ? hand[i].face : *high;
-  }
-
-  if (hand[0].face == 1)
-    *high = 1;
 
   return TRUE;
 }
 
 int isStraight(Card *hand, int *high) {
   int i = 1, aux = hand[0].face;
-
-  if (hand[0].face == 1)
-    *high = 1;
-  else *high = hand[N_CARDS - 1].face;
+  *high = aux;
 
   for (; i < N_CARDS; i++) {
-    if (hand[i].face != aux + 1){
-      if (hand[i].face == 10 && aux == 1)
+    if (hand[i].face != aux - 1){
+      if (hand[i].face == 5 && aux == ACE)
         aux = hand[i].face;
       else
         return FALSE;
