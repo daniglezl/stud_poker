@@ -12,7 +12,7 @@
 #define MIN_HANDS 0
 #define MAX_FACES 13
 #define N_CARDS_LINE 10
-#define N_RANNKS 9
+#define N_RANKS 9
 #define N_SUITS 4
 #define ACE 14
 enum ranks { SF = 1, FK, FH, F, S, TK, TP, OP, HC };
@@ -43,6 +43,6 @@ void displayHands(Card hands[][N_CARDS], int ranks[][2], int nHands,
 void quickSort(Card *hand, int start, int end);
 void sortHands(Card hands[][N_CARDS], int ranks[][2], int nHands);
 void getRank(Card *hand, int ranks[][2], int handIndex);
-int isFlush(Card *hand, int *high);
-int isStraight(Card *hand, int *high);
-int getNKind(Card *hand, int *high, int differentThan, int changeHigh);
+int * isFlush(Card *hand);
+int * isStraight(Card *hand);
+int * getMatch(Card *hand);
