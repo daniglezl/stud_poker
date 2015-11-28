@@ -236,9 +236,11 @@ int *isStraight(Card *hand) {
   rank[1] = hand[N_CARDS - 1].face;
 
   for (i = 1; i < N_CARDS; i++)
-    if (hand[i].face != hand[i - 1].face + 1)
+    if (hand[i].face != hand[i - 1].face + 1) {
       if(hand[i].face != ACE || hand[i - 1].face != 5)
         rank[0] = FALSE;
+      else rank[1] = 5;
+    }
 
   return rank;
 }
