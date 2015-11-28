@@ -43,6 +43,6 @@ void displayHands(Card hands[][N_CARDS], int ranks[][2], int nHands,
 void quickSort(Card *hand, int start, int end);
 void sortHands(Card hands[][N_CARDS], int ranks[][2], int nHands);
 void getRank(Card *hand, int ranks[][2], int handIndex);
-int * isFlush(Card *hand);
-int * isStraight(Card *hand);
-int * getMatch(Card *hand);
+int *isFlush(Card *hand);
+int *isStraight(Card *hand);
+int *getMatch(Card *hand);
