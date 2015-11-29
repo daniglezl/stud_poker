@@ -63,5 +63,8 @@ int main(int argc, char *argv[]) {
   printf("%s\n", "Sorted hands: ==================================================================");
   displayHands(hands, ranks, nHands, TRUE);
 
+  // Decide and print the winner(s) of the game
+  chooseWinner(ranks, nHands);
+
   return 0;
 }
