@@ -64,6 +64,7 @@ int main(int argc, char *argv[]) {
   displayHands(hands, ranks, nHands, TRUE);
 
   // Decide and print the winner(s) of the game
+  printf("%s\n", "================================================================================");
   chooseWinner(ranks, nHands);
 
   return 0;

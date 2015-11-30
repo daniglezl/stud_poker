@@ -46,3 +46,4 @@ void getRank(Card *hand, int ranks[][2], int handIndex);
 int *isFlush(Card *hand);
 int *isStraight(Card *hand);
 int *getMatch(Card *hand);
+void chooseWinner(int ranks[][2], int nHands);
