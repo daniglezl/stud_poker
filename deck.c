@@ -298,3 +298,47 @@ int *getMatch(Card *hand) {
 
   return rank;
 }
+
+void chooseWinner(int ranks[][2], int handIndex)
+{
+   int hands = handIndex;
+   int winners[hands];
+   int winpointer = 0;
+   int rank = 10;
+   int i = 0;
+   int high = 0;
+
+   for(i = 0 ; i<hands ; i++)
+   {
+      if(ranks[i][0] < rank)
+      {
+         rank = ranks[i][0];
+      }
+   }
+   for(i = 0 ; i < hands ; i++)
+   {
+      if(ranks[i][0] == rank)
+      {
+         if(ranks[i][1] > high)
+         {
+            high = ranks[i][1];
+         }
+      }
+   }
+   for(i = 0 ; i < hands ; i++)
+   {
+      if((ranks[i][0] == rank) && (ranks[i][1] == high))
+      {
+         winners[winpointer] = i + 1;
+         winpointer++;
+      }
+   }
+   printf("winner(s) : ");
+
+   for(i = 0; i < winpointer ; i++)
+   {
+      printf("Player %d, ", winners[i]);
+   }
+   printf("\n");
+return;
+}
