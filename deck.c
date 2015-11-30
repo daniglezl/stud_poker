@@ -299,46 +299,36 @@ int *getMatch(Card *hand) {
   return rank;
 }
 
-void chooseWinner(int ranks[][2], int handIndex)
-{
-   int hands = handIndex;
-   int winners[hands];
+void chooseWinner(int ranks[][2], int nHands) {
+   int winners[nHands];
    int winpointer = 0;
-   int rank = 10;
+   int rank = HC;
    int i = 0;
    int high = 0;
 
-   for(i = 0 ; i<hands ; i++)
-   {
+   for(i = 0; i < nHands; i++)
       if(ranks[i][0] < rank)
-      {
-         rank = ranks[i][0];
-      }
-   }
-   for(i = 0 ; i < hands ; i++)
-   {
-      if(ranks[i][0] == rank)
-      {
-         if(ranks[i][1] > high)
-         {
-            high = ranks[i][1];
-         }
-      }
-   }
-   for(i = 0 ; i < hands ; i++)
-   {
-      if((ranks[i][0] == rank) && (ranks[i][1] == high))
+        rank = ranks[i][0];
+
+   for(i = 0; i < nHands; i++)
+      if(ranks[i][0] == rank && ranks[i][1] > high)
+        high = ranks[i][1];
+
+   for(i = 0; i < nHands; i++)
+      if(ranks[i][0] == rank && ranks[i][1] == high)
       {
          winners[winpointer] = i + 1;
          winpointer++;
       }
-   }
-   printf("winner(s) : ");
 
-   for(i = 0; i < winpointer ; i++)
+   printf("Winner(s): ");
+
+   for(i = 0; i < winpointer; i++)
    {
-      printf("Player %d, ", winners[i]);
+      if (i != winpointer - 1)
+        printf("Player %d, ", winners[i]);
+      else
+        printf("Player %d", winners[i]);
    }
    printf("\n");
-return;
 }
