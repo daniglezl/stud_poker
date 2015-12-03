@@ -41,7 +41,7 @@ int checkInput(int argc, char *argv[]) {
       return FALSE;
     }
   } else {
-      printf("%s\n", "Number of hands has to be an integer");
+      printf("%s\n", "Number of hands has to be a positive integer");
       return FALSE;
   }
 
@@ -157,7 +157,8 @@ void displayHands(Card hands[][N_CARDS], int ranks[][2], int nHands,
     }
 }
 
-// Helper function to sort cards in a hand in the correct order
+// Helper function to sort cards in a hand in the correct order using
+// quick sort
 void quickSort(Card *hand, int start, int end) {
   int i = start;
   int j = end;
@@ -180,7 +181,7 @@ void quickSort(Card *hand, int start, int end) {
   else return;
 }
 
-// Puts each hand in order
+// Puts each hand in order by using quickSort and gets the hand's rank
 void sortHands(Card hands[][N_CARDS], int ranks[][2], int nHands) {
   int i;
   for (i = 0; i < nHands; i++) {
@@ -189,15 +190,17 @@ void sortHands(Card hands[][N_CARDS], int ranks[][2], int nHands) {
   }
 }
 
-// Fills the 'ranks' array with the rank and high card of each
-// hand in play
+/*
+  Author: Drhumel Shah
+  Fills the 'ranks' array with the rank and high card of each
+  hand in play
+*/
 void getRank(Card *hand, int ranks[][2], int handIndex) {
   int rank[2], *rankF, *rankS, *rankM;
 
   rankF = isFlush(hand);
   rankS = isStraight(hand);
   rankM = getMatch(hand);
-  //printf("%d %d and ",rankF[1],rankM[1]);
   if (*rankF && *rankS) {
     rank[0] = SF;
     rank[1] = *(rankS + 1);
@@ -219,7 +222,10 @@ void getRank(Card *hand, int ranks[][2], int handIndex) {
   ranks[handIndex][1] = rank[1];
 }
 
-// Handles Flushes since they do not rely on face value
+/*
+  Author: Daniel Gonzalez
+  Handles Flushes since they do not rely on face value
+*/
 int *isFlush(Card *hand) {
   int i;
   int *rank = (int *)malloc(2 * sizeof(int));
@@ -233,7 +239,10 @@ int *isFlush(Card *hand) {
   return rank;
 }
 
-// Handles straights because they do not rely on multiples
+/*
+  Author: Daniel Gonzalez
+  Handles straights because they do not rely on multiples
+*/
 int *isStraight(Card *hand) {
   int i;
   int *rank = (int *)malloc(2 * sizeof(int));
@@ -242,7 +251,7 @@ int *isStraight(Card *hand) {
 
   for (i = 1; i < N_CARDS; i++)
     if (hand[i].face != hand[i - 1].face + 1) {
-      if(hand[i].face != ACE || hand[i - 1].face != 5)
+      if(hand[i].face != ACE || hand[i - 1].face != 5) // takes care of A-5
         rank[0] = FALSE;
       else rank[1] = 5;
     }
@@ -250,8 +259,11 @@ int *isStraight(Card *hand) {
   return rank;
 }
 
-// Handles all other ranks because all others rely on 
-// the appearance of multiples of one or more face value
+/*
+  Author: Drhumel Shah
+  Handles all other ranks because all others rely on
+  the appearance of multiples of one or more face value
+*/
 int *getMatch(Card *hand) {
   int i, j = 1;
   int two = 0;
@@ -307,9 +319,9 @@ int *getMatch(Card *hand) {
 }
 
 /*
+  Author: Antonio Riverol
   Reads the 'ranks' 2-d array and decides the winner of
   the poker game with 1 level of tie breaking.
-      - Antonio Riverol
 */
 void chooseWinner(int ranks[][2], int nHands) {
    int winners[nHands];
