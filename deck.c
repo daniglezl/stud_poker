@@ -12,6 +12,8 @@ static const char *RANKS[N_RANKS + 1] = { " ", "Straight Flush",
                                            "Three of a Kind", "Two Pair",
                                            "One Pair", "High Card" };
 
+// checks user input from the command line, rejecting invalid input
+// and advising the user about valid input
 int checkInput(int argc, char *argv[]) {
   int arg1, arg2;
 
@@ -46,7 +48,7 @@ int checkInput(int argc, char *argv[]) {
   return TRUE;
 }
 
-
+// Fills the 'deck' array of all necessary cards
 void constructDeck(Card *deck) {
   int i, j = 0;
 
@@ -78,14 +80,14 @@ void shuffleDeck(Card *deck) {
   }
 }
 
-
+// Helper function to swap the positions of 2 cards
 void swapElements(Card *hands, int pos1, int pos2) {
   Card aux = hands[pos1];
   hands[pos1] = hands[pos2];
   hands[pos2] = aux;
 }
 
-
+// Print out representations of each card in the deck
 void displayCards(Card *cards, int nCards) {
   int j, r, k = 0, i = nCards / N_CARDS_LINE;
   if ((r = nCards % N_CARDS_LINE > 0))
@@ -129,7 +131,7 @@ void displayCards(Card *cards, int nCards) {
   }
 }
 
-
+// Assigns the wanted number of cards to each hand from the current 'deck' array
 void dealCards(Card hands[][N_CARDS], Card *deck, int nHands) {
   int i, j, index = 0;
   for (i = 0; i < nHands; i++)
@@ -139,7 +141,7 @@ void dealCards(Card hands[][N_CARDS], Card *deck, int nHands) {
     }
 }
 
-
+// Print out representations of each card from each hand in play
 void displayHands(Card hands[][N_CARDS], int ranks[][2], int nHands,
                   int printRank) {
   int i;
@@ -155,7 +157,7 @@ void displayHands(Card hands[][N_CARDS], int ranks[][2], int nHands,
     }
 }
 
-
+// Helper function to sort cards in a hand in the correct order
 void quickSort(Card *hand, int start, int end) {
   int i = start;
   int j = end;
@@ -178,7 +180,7 @@ void quickSort(Card *hand, int start, int end) {
   else return;
 }
 
-
+// Puts each hand in order
 void sortHands(Card hands[][N_CARDS], int ranks[][2], int nHands) {
   int i;
   for (i = 0; i < nHands; i++) {
@@ -187,7 +189,8 @@ void sortHands(Card hands[][N_CARDS], int ranks[][2], int nHands) {
   }
 }
 
-
+// Fills the 'ranks' array with the rank and high card of each
+// hand in play
 void getRank(Card *hand, int ranks[][2], int handIndex) {
   int rank[2], *rankF, *rankS, *rankM;
 
@@ -216,6 +219,7 @@ void getRank(Card *hand, int ranks[][2], int handIndex) {
   ranks[handIndex][1] = rank[1];
 }
 
+// Handles Flushes since they do not rely on face value
 int *isFlush(Card *hand) {
   int i;
   int *rank = (int *)malloc(2 * sizeof(int));
@@ -229,6 +233,7 @@ int *isFlush(Card *hand) {
   return rank;
 }
 
+// Handles straights because they do not rely on multiples
 int *isStraight(Card *hand) {
   int i;
   int *rank = (int *)malloc(2 * sizeof(int));
@@ -245,6 +250,8 @@ int *isStraight(Card *hand) {
   return rank;
 }
 
+// Handles all other ranks because all others rely on 
+// the appearance of multiples of one or more face value
 int *getMatch(Card *hand) {
   int i, j = 1;
   int two = 0;
@@ -299,6 +306,11 @@ int *getMatch(Card *hand) {
   return rank;
 }
 
+/*
+  Reads the 'ranks' 2-d array and decides the winner of
+  the poker game with 1 level of tie breaking.
+      - Antonio Riverol
+*/
 void chooseWinner(int ranks[][2], int nHands) {
    int winners[nHands];
    int winpointer = 0;
@@ -306,14 +318,19 @@ void chooseWinner(int ranks[][2], int nHands) {
    int i = 0;
    int high = 0;
 
+// Finds the highest rank that appears in this particular game
    for(i = 0; i < nHands; i++)
       if(ranks[i][0] < rank)
         rank = ranks[i][0];
 
+// Checks all players that have the winning rank and from these
+// players, finds the high card among them
    for(i = 0; i < nHands; i++)
       if(ranks[i][0] == rank && ranks[i][1] > high)
         high = ranks[i][1];
 
+// Enters all players who have the winning rank and high card
+// into their own 'winners' array
    for(i = 0; i < nHands; i++)
       if(ranks[i][0] == rank && ranks[i][1] == high)
       {
@@ -323,6 +340,7 @@ void chooseWinner(int ranks[][2], int nHands) {
 
    printf("Winner(s): ");
 
+// Prints names of winners
    for(i = 0; i < winpointer; i++)
    {
       if (i != winpointer - 1)
