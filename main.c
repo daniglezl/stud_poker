@@ -1,7 +1,7 @@
 /*
   Authors:
     Drhumel Shah
-    Antonio Riverol
+    Antonio Riverol - 4023394
     Daniel Gonzalez - 4139989
 
   “We hereby certify that this collective work is our own and none of it is
