@@ -1,9 +1,13 @@
-#include "deck.h" // provides constants, std libraries and function prototypes
+/*
+ Authors:
+    Dhrumel Shah - 5577798
+    Antonio Riverol - 4023394
+    Daniel Gonzalez - 4139989
+  "We hereby certify that this collective work is our own and none of it is
+   the work of any other person or entity."
+*/
 
-// Author name: Daniel Gonzalez
-// Author id:   4139989
-/* I hereby certify that this collective work is my own and none
-   of it is the work of any other person or entity. */
+#include "deck.h" // provides constants, std libraries and function prototypes
 
 int main(int argc, char *argv[]) {
 
@@ -22,47 +26,33 @@ int main(int argc, char *argv[]) {
   constructDeck(deck);
 
   // display deck
-  printf("%s\n", "Deck: ==========================================================================");
+  printf("%s\n", "Deck: =========================================================================");
   displayCards(deck, DECK);
 
   // shuffle deck
   shuffleDeck(deck);
 
   // display shuffled deck
-  printf("%s\n", "Shuffled deck: =================================================================");
+  printf("%s\n", "Shuffled deck: ================================================================");
   displayCards(deck, DECK);
 
   // deal cards
   dealCards(hands, deck, nHands);
 
-  /******************** Set values here to test ranks ************************/
-   
-   hands[0][0].face = 10;
-   hands[0][0].suit = 1;
-   hands[0][0].index = 1;
-   hands[0][1].face = 11;
-   hands[0][1].suit = 1;
-   hands[0][1].index = 2;
-   hands[0][2].face = 12;
-   hands[0][2].suit = 1;
-   hands[0][2].index = 3;
-   hands[0][3].face = 13;
-   hands[0][3].suit = 1;
-   hands[0][3].index = 4;
-   hands[0][4].face = 14;
-   hands[0][4].suit = 1;
-   hands[0][4].index = 5;
-
   // print unsorted hands
-  printf("%s\n", "Unsorted hands: ================================================================");
+  printf("%s\n", "Unsorted hands: ===============================================================");
   displayHands(hands, ranks, nHands, FALSE);
 
   // sort hands
   sortHands(hands, ranks, nHands);
 
-  // display sorted hands
-  printf("%s\n", "Sorted hands: ==================================================================");
+  // display sorted hands and ranks
+  printf("%s\n", "Sorted hands: =================================================================");
   displayHands(hands, ranks, nHands, TRUE);
+
+  // Decide and print the winner(s) of the game
+  printf("%s\n", "===============================================================================");
+  chooseWinner(ranks, nHands);
 
   return 0;
 }
